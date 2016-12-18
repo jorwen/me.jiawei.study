@@ -7,7 +7,7 @@
         <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://116.62.36.82:3306/demo?characterEncoding=UTF-8"/>
         <property name="username" value="root"/>
-        <property name="password" value=""/>
+        <property name="password" value="123456"/>
     </bean>
 
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
