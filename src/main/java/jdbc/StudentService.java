@@ -1,9 +1,11 @@
 package jdbc;
 
-import javax.annotation.Resource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+@Service
 public class StudentService {
-    @Resource
+    @Autowired
     private StudentDAO studentDAO;
 
     public Integer countStudent(){

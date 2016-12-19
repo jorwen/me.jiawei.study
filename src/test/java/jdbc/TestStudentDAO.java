@@ -3,17 +3,15 @@ package jdbc;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
-
-import javax.annotation.Resource;
 
 //启动Spring容器
 @ContextConfiguration(locations = { "classpath:spring-jdbc-test.xml"})
 public class TestStudentDAO {
-    @Resource
+    @Autowired
     private StudentDAO studentDAO;
-
 
     @Before
     public void setUpContext() throws Exception {
