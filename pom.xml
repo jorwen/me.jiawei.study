@@ -130,19 +130,30 @@
             <artifactId>ons-client</artifactId>
             <version>1.2.7.Final</version>
         </dependency>
+
+        <!--test-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>4.3.4.RELEASE</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>2.3.5</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <plugins>
-            <!-- 声明不需要自动运行测试案例类 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.12.4</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
-            </plugin>
 
             <!--申明JDK版本-->
             <plugin>
@@ -184,6 +195,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <!-- 发布时自动将源码同时发布的配置 -->
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -198,11 +211,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.9</version>
-                <configuration>
-                    <show>private</show>
-                    <nohelp>true</nohelp>
-                </configuration>
+                <version>2.9.1</version>
             </plugin>
         </plugins>
     </build>
