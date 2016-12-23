@@ -15,5 +15,6 @@
         <property name="dataSource" ref="springDSN"/>
     </bean>
 
+    <!--自动扫描指定路径下的包（含所有子包）-->
     <context:component-scan base-package="jdbc"/>
 </beans>

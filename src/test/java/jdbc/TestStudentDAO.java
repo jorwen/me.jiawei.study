@@ -8,7 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestContextManager;
 
 //启动Spring容器
-@ContextConfiguration(locations = { "classpath:spring-jdbc-test.xml"})
+@ContextConfiguration(locations = { "classpath:spring-jdbc.xml"})
 public class TestStudentDAO {
     @Autowired
     private StudentDAO studentDAO;
