@@ -15,9 +15,6 @@
         <property name="dataSource" ref="springDSN"/>
     </bean>
 
-    <!--自动扫描指定路径下的包（含所有子包）-->
-    <context:component-scan base-package="jdbc"/>
-
     <!--定义事物-->
     <bean id="transactionManager"
           class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -32,4 +29,7 @@
 
     <!--注解方式配置事物-->
     <tx:annotation-driven transaction-manager="transactionManager" />
+
+    <!--自动扫描指定路径下的包（含所有子包）-->
+    <context:component-scan base-package="jdbc"/>
 </beans>
