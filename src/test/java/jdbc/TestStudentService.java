@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 //启动Mock容器
 @RunWith(MockitoJUnitRunner.class)
 //启动Spring容器
-@ContextConfiguration(locations = { "classpath:spring-jdbc-test.xml"})
+@ContextConfiguration(locations = { "classpath:spring-jdbc.xml"})
 public class TestStudentService {
     @InjectMocks
     @Resource
@@ -42,5 +42,35 @@ public class TestStudentService {
 
         Integer count = studentService.countStudent();
         Assert.assertEquals(count, new Integer(7));
+    }
+
+    @Test
+    public void testTransactional(){
+        studentService.update2Student(1,2,20,true);
+        try {
+            studentService.update2Student(1, 2, 16, false);
+        }catch (Exception e){
+            System.out.println("error");
+        }
+    }
+
+    @Test
+    public void testNoTransactional(){
+        studentService.update2Student(1,2,20,true);
+        try {
+            studentService.update2StudentNoTrans(1, 2, 16, false);
+        }catch (Exception e){
+            System.out.println("error");
+        }
+    }
+
+    @Test
+    public void testTransactional2(){
+        studentService.update2Student(1,2,20,true);
+        try {
+            studentService.update2Student2(1, 2, 16, false);
+        }catch (Exception e){
+            System.out.println("error");
+        }
     }
 }

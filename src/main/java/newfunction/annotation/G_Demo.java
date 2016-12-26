@@ -2,8 +2,12 @@ package newfunction.annotation;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Field;
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 一个完整的SQLString范例
@@ -11,17 +15,14 @@ import java.util.*;
  * @author jw.fang
  * @version 1.0
  */
-public class G_Demo
-{
+public class G_Demo {
     //实现创建表
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
         TableCreator tc = new TableCreator();
         tc.executeCreateDB(Member.class);
     }
 
-    public @interface Constraints
-    {
+    public @interface Constraints {
         boolean primaryKey() default false;
 
         boolean allowNull() default true;
@@ -32,15 +33,13 @@ public class G_Demo
     @Target(ElementType.TYPE)//类，接口或enum
     @Retention(RetentionPolicy.RUNTIME)
     //定义表名的注解
-    public @interface DBTable
-    {
+    public @interface DBTable {
         public String name() default "";
     }
 
     @Target(ElementType.FIELD)//类，接口或enum
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface SQLInteger
-    {
+    public @interface SQLInteger {
         String name() default "";
 
         //嵌套注解的功能,将column类型的数据库约束信息嵌入其中
@@ -49,8 +48,7 @@ public class G_Demo
 
     @Target(ElementType.FIELD)//类，接口或enum
     @Retention(RetentionPolicy.RUNTIME)
-    public @interface SQLString
-    {
+    public @interface SQLString {
         int value() default 0;
 
         String name() default "";
@@ -60,8 +58,7 @@ public class G_Demo
     }
 
     @DBTable(name = "MEMBER")
-    public class Member
-    {
+    public class Member {
         //在使用注解过程中，如果有元素是value，并且只有value需要赋值，
         //则只需要在()中将值写入
         @SQLString(30)
@@ -73,147 +70,111 @@ public class G_Demo
         @SQLString(value = 30, constraints = @Constraints(primaryKey = true))
         private String handle;
 
-        public String getFirstName()
-        {
+        public String getFirstName() {
             return firstName;
         }
 
-        public void setFirstName(String firstName)
-        {
+        public void setFirstName(String firstName) {
             this.firstName = firstName;
         }
 
-        public String getLastName()
-        {
+        public String getLastName() {
             return lastName;
         }
 
-        public void setLastName(String lastName)
-        {
+        public void setLastName(String lastName) {
             this.lastName = lastName;
         }
 
-        public Integer getAge()
-        {
+        public Integer getAge() {
             return age;
         }
 
-        public void setAge(Integer age)
-        {
+        public void setAge(Integer age) {
             this.age = age;
         }
 
-        public String getHandle()
-        {
+        public String getHandle() {
             return handle;
         }
 
-        public void setHandle(String handle)
-        {
+        public void setHandle(String handle) {
             this.handle = handle;
         }
     }
 
-    public static class TableCreator
-    {
-        public Connection getConnection()
-        {
+    public static class TableCreator {
+        public Connection getConnection() {
             String user = "root";
             String password = "";
             String serverUrl = "jdbc:mysql://localhost:3306/carrent?user=root&password=";
-            try
-            {
+            try {
                 Class.forName("com.mysql.jdbc.Driver");
                 Connection con = DriverManager.getConnection(serverUrl, user, password);
                 return con;
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
         }
 
-        public void executeCreateDB(Class<?> entity)
-        {
+        public void executeCreateDB(Class<?> entity) {
             String sqlStr = explainAnnotation(entity);
             Connection con = getConnection();
             PreparedStatement psql = null;
-            if (con != null && !sqlStr.equals("error"))
-            {
-                try
-                {
+            if (con != null && !sqlStr.equals("error")) {
+                try {
                     psql = con.prepareStatement(sqlStr);
                     psql.execute();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
-                }
-                finally
-                {
-                    try
-                    {
+                } finally {
+                    try {
                         if (psql != null) psql.close();
-                    }
-                    catch (SQLException e)
-                    {
+                    } catch (SQLException e) {
                         e.printStackTrace();
                     }
-                    try
-                    {
-                        if (psql != null)
-                        {
+                    try {
+                        if (psql != null) {
                             psql.close();
                         }
-                    }
-                    catch (SQLException e)
-                    {
+                    } catch (SQLException e) {
                         e.printStackTrace();
                     }
                 }
-            }
-            else System.out.println("failure to...");
+            } else System.out.println("failure to...");
         }
 
         // 真正的处理器,Class<?>必须用这个表明
-        public String explainAnnotation(Class<?> entity)
-        {
+        public String explainAnnotation(Class<?> entity) {
             // 获取指定类型的注解
             DBTable dbtable = entity.getAnnotation(DBTable.class);
-            if (dbtable == null)
-            {
+            if (dbtable == null) {
                 System.out.println("No DBTable annotation in class" + entity.getName());
                 return "error";
-            }
-            else
-            {
+            } else {
                 String tableName = dbtable.name();// 获取注解name值，即表名称
                 // 当没有设置name值，直接利用类的名作为表名
                 if (tableName.length() < 1) tableName = entity.getName().toUpperCase();// 转换大写
                 // 准备处理字段注解
                 List<String> columnsDefs = new ArrayList<String>();
                 // 获取该类的所有字段
-                for (Field field : entity.getDeclaredFields())
-                {
+                for (Field field : entity.getDeclaredFields()) {
                     String columnName = null;
                     // 获取该字段所有的注解
                     Annotation[] anns = field.getDeclaredAnnotations();
                     // Annotation[] anns=field.getAnnotations();
                     // 当有注解的时候
-                    if (anns.length >= 1)
-                    {
+                    if (anns.length >= 1) {
                         // 判断注解的类型
-                        if (anns[0] instanceof SQLInteger)
-                        {
+                        if (anns[0] instanceof SQLInteger) {
                             SQLInteger sInt = (SQLInteger) anns[0];
                             // 当没有name时候，将字段大写为列名
                             if (sInt.name().length() < 1) columnName = field.getName().toUpperCase();
                             else columnName = sInt.name();
                             columnsDefs.add(columnName + " INT" + getConstraints(sInt.constraints()));
                         }
-                        if (anns[0] instanceof SQLString)
-                        {
+                        if (anns[0] instanceof SQLString) {
                             SQLString sString = (SQLString) anns[0];
                             // 当没有name时候，将字段大写为列名
                             if (sString.name().length() < 1) columnName = field.getName().toUpperCase();
@@ -234,8 +195,7 @@ public class G_Demo
         }
 
         // 返回指定的约束
-        public String getConstraints(Constraints con)
-        {
+        public String getConstraints(Constraints con) {
             String constras = "";
             if (!con.allowNull()) constras += " NOT NULL";
             if (con.primaryKey()) constras += " PRIMARY KEY";

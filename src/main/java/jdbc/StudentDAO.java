@@ -21,4 +21,8 @@ public class StudentDAO{
                 ,new StudentDO(),new Object[]{"%"+name+"%"});
         return studentDOList;
     }
+
+    public void updateAge(Integer id, Integer age ){
+        jdbcTemplate.update("update students set age = ? where id = ?",new Object[]{age,id});
+    }
 }
