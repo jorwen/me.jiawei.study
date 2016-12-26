@@ -1,34 +1,57 @@
 package newfunction.annotation2;
 
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.BeanUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
 public class TestStringLimit {
-    @StringLimit(maxLength = 10)
+    @StringLimit(maxLength = 20)
     private String text;
 
-    public String getText() {
-        StringLimit limit = null;
-        try {
-            limit =this.getClass().getDeclaredField("text").getDeclaredAnnotation(StringLimit.class);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        }
+    @StringLimit(maxLength = 10)
+    private String name;
 
-        if(limit != null && limit.maxLength() > 0){
-            text = StringUtils.abbreviate(text, limit.maxLength());
-        }
+    public String getText() {
+
         return text;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public void setText(String text) {
         this.text = text;
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws Exception {
 
         TestStringLimit test = new TestStringLimit();
         test.setText("asjdhashdjksahdjksahdjash");
+        test.setName("126345372462387");
+        annotation(test);
+        System.out.println("text:"+test.getText());
+        System.out.println("name:"+test.getName());
+    }
 
-        System.out.println(test.getText());
+    private static void annotation(TestStringLimit s) throws Exception {
+        Field[] fields = s.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            StringLimit limit = field.getDeclaredAnnotation(StringLimit.class);
+            if(limit != null && limit.maxLength() > 0){
+                Method methodGet = BeanUtils.findMethod(s.getClass(),"get"+StringUtils.capitalize(field.getName()));
+                Method methodSet = BeanUtils.findMethod(s.getClass(),"set"+StringUtils.capitalize(field.getName()),String.class);
+                if(methodGet == null || methodSet == null) continue;
+                String value = (String)methodGet.invoke(s);
+                value = StringUtils.abbreviate(value, limit.maxLength());
+                methodSet.invoke(s,value);
+            }
+        }
     }
 }
