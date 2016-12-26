@@ -19,6 +19,7 @@ public class StudentService {
         return studentDAO.countStudent();
     }
 
+    //注解方式事物
     @Transactional
     public void update2Student(Integer id, Integer id2, Integer age, boolean isOk){
         studentDAO.updateAge(id,age);
