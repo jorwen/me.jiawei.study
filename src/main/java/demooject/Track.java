@@ -1,16 +1,20 @@
 package demooject;
 
+import java.io.Serializable;
+
 /**
  * 曲目
  */
-public class Track {
+public class Track implements Serializable {
     private String name;
 
     private int time;
 
     private String type;
 
-    public Track(String name, int time) {
+    public Track(){}
+
+    public Track(String name, Integer time) {
         this.name = name;
         this.time = time;
     }
