@@ -1,7 +1,5 @@
 package demooject;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 /**
@@ -15,15 +13,6 @@ public class Track implements Serializable {
     private int time;
 
     private String type;
-
-
-    private void writeObject(ObjectOutputStream out) {
-        //对字段加密
-    }
-
-    private void readObject(ObjectInputStream in) {
-        //对字段解密
-    }
 
     public Track(){}
 
