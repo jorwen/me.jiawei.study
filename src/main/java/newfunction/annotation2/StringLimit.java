@@ -9,4 +9,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StringLimit {
     int maxLength() default 0;
+
+    int minLength() default 0;
 }

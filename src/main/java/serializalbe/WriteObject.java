@@ -10,6 +10,7 @@ public class WriteObject {
         Track track = new Track();
         track.setName("我是序列化");
 
+        //Java文件流
         ObjectOutputStream os = new ObjectOutputStream(new FileOutputStream("/work/out/wxp.txt"));
         os.writeObject(track);
         os.close();
