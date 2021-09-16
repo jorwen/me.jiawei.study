@@ -1,6 +1,5 @@
 package aliyunmq;
 
-import com.aliyun.mns.client.CloudAccount;
 
 /**
  * Created by fangjiawei on 2016/12/15.
